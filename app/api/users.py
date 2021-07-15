@@ -25,8 +25,8 @@ from passlib.hash import pbkdf2_sha256
 from app.config import sender_mail
 from app.config import MAIL_PASSWORD ,MAIL_SERVER ,MAIL_USERMAIL , MAIL_PORT
 from app.config import url_api
-app = Flask(__name__)
-mail = Mail(app)
+from app.config import app 
+
 
 app.config['MAIL_SERVER']= MAIL_SERVER
 app.config['MAIL_PORT'] = MAIL_PORT
@@ -152,7 +152,7 @@ def pass_Reset():
    if old_password == new_password :
       return jsonify(msg="new password should be diffrent from old password")
    if new_password != confirm_new_password :
-      return jsonify(msg="new password done not match"), 400
+      return jsonify(msg="new password dose not match"), 400
 
    log_user = mongo.db.Users.find_one({"username":user})
    print("22222222222", log_user) #debuging
@@ -196,8 +196,8 @@ def pass_Forgot():
       msg.body = "Request for New Password Is Accepted - Open The Link And Get A New Random Password "
       msg.html = url_api.replace("{{DATA}}",str(base64_string))
       mail.send(msg)
-                            #replace function
-   return "check mail"
+                            
+   return "Password Forgot Mail Send To Your Mail"
 
 @bp.route('/set_pass', methods=['GET']) 
 def set_tempPass():
