@@ -40,8 +40,8 @@ def create_app(test_config=None):
     db.get_db(mongo=mongo, app=app)
     token.get_token(jwt=jwt, app=app)
 
-    from app.api import user
-    app.register_blueprint(user.bp)
+    from app.api import users
+    app.register_blueprint(users.bp)
 
     from app.api import tasks
     app.register_blueprint(tasks.bp)
