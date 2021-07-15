@@ -23,13 +23,13 @@ from flask_jwt_extended import (JWTManager, create_access_token,current_user,
 from passlib.apps import custom_app_context as pwd_context
 from passlib.hash import pbkdf2_sha256
 from app.config import sender_mail
-from app.config import MAIL_PASSWORD ,MAIL_SERVER ,MAIL_USERMAIL
+from app.config import MAIL_PASSWORD ,MAIL_SERVER ,MAIL_USERMAIL , MAIL_PORT
 from app.config import url_api
 app = Flask(__name__)
 mail = Mail(app)
 
 app.config['MAIL_SERVER']= MAIL_SERVER
-app.config['MAIL_PORT'] = 465
+app.config['MAIL_PORT'] = MAIL_PORT
 app.config['MAIL_USERNAME'] = sender_mail
 app.config['MAIL_PASSWORD'] = MAIL_PASSWORD
 app.config['MAIL_USE_TLS'] = False
@@ -38,15 +38,8 @@ mail = Mail(app)
 
 bp = Blueprint('users', __name__, url_prefix='/')
 
-@bp.route('/mail' , methods=['GET'])
-def index():
-   E_maill = request.json.get("email",None)
-   msg = Message('Hello_welcome', sender = sender_mail , recipients = [E_maill])
-   msg.body = api_url
-   mail.send(msg)
-   return "Sent"
 
-@bp.route('/reg', methods=['POST'])
+@bp.route('/register', methods=['POST'])
 def register():
    role = request.json.get("role", "user")
    name = request.json.get("name", None)
@@ -55,7 +48,7 @@ def register():
    Email = request.json.get("email", None)
  
    if not name:
-      return jsonify({"msg": "please enter username "}), 400
+      return jsonify({"msg": "please enter name "}), 400
    if not username:
       return jsonify({"msg":"please enter username"}) , 400
    if not password:
@@ -99,9 +92,9 @@ def register():
 
 @bp.route('/User_login', methods=['POST'])
 def login():
-   is_user = request.json.get("username", None)
+   log_user = request.json.get("username", None)
    password = request.json.get("password", None)
-   if not is_user:
+   if not log_user:
       return jsonify(msg="Missing username parameter"), 400
    if not password:
       return jsonify(msg="Missing password parameter"), 400
@@ -113,14 +106,10 @@ def login():
    if not pbkdf2_sha256.verify(password, User_A["password"]):
       return jsonify(msg="password is wrong"), 400
    
-   user1 = is_user
+   user1 = log_user
    print("check",user1)
    expires = datetime.timedelta(days=1)
    access_token = create_access_token(identity=user1, expires_delta=expires)
-   if user1 is not None:
-      msg = Message('Security - Login alert', sender = sender_mail , recipients = ['razuly@livinginsurance.co.uk'] )
-      msg.body = "Warning - New device signed in   " 
-      mail.send(msg)
    return jsonify(access_token=access_token), 200
 
 
