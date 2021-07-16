@@ -10,7 +10,7 @@ MAIL_SERVER='smtp.gmail.com'
 MAIL_USERMAIL = 'mohit_saini@excellencetechnologies.info',
 MAIL_PASSWORD = 'pyeyetbwpacvihwp'
 MAIL_SERVER='smtp.gmail.com'
-MAIL_PORT = 465
+
 #sender's mail
 sender_mail = 'mohit_saini@excellencetechnologies.info'
 url_api = "(<a href =http://127.0.0.1:5000/set_pass?Email={{DATA}}>Click Here To Chnage Password</a>)"

@@ -215,7 +215,7 @@ def del_Assigntasks():
 
     return jsonify(str(set))
 
-@app.route('/del_tasks', methods=['DELETE'])
+@bp.route('/del_tasks', methods=['DELETE'])
 @jwt_required
 @manager_required
 def del_Bulktasks():

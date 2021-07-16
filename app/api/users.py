@@ -30,7 +30,7 @@ from app.config import app
 
 app.config['MAIL_SERVER']= MAIL_SERVER
 app.config['MAIL_PORT'] = MAIL_PORT
-app.config['MAIL_USERNAME'] = MAIL_USERMAIL
+app.config['MAIL_USERNAME'] = sender_mail
 app.config['MAIL_PASSWORD'] = MAIL_PASSWORD
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
@@ -92,21 +92,21 @@ def register():
 
 @bp.route('/User_login', methods=['POST'])
 def login():
-   log_mail = request.json.get("username", None)
+   log_user = request.json.get("username", None)
    password = request.json.get("password", None)
-   if not log_mail:
+   if not log_user:
       return jsonify(msg="Missing username parameter"), 400
    if not password:
       return jsonify(msg="Missing password parameter"), 400
 
-   User_A = mongo.db.Users.find_one({"email": log_mail})
+   User_A = mongo.db.Users.find_one({"username": is_user})
    if User_A is None:
-      return jsonify(msg="usermail doesn't exists"), 400
+      return jsonify(msg="user doesn't exists"), 400
    print("check", User_A)
    if not pbkdf2_sha256.verify(password, User_A["password"]):
       return jsonify(msg="password is wrong"), 400
    
-   user1 = log_mail
+   user1 = log_user
    print("check",user1)
    expires = datetime.timedelta(days=1)
    access_token = create_access_token(identity=user1, expires_delta=expires)
@@ -155,6 +155,7 @@ def pass_Reset():
       return jsonify(msg="new password dose not match"), 400
 
    log_user = mongo.db.Users.find_one({"username":user})
+   print("22222222222", log_user) #debuging
    if log_user is None:
       return jsonify(msg = "usernname dose not exist")
 
@@ -201,6 +202,7 @@ def pass_Forgot():
 @bp.route('/set_pass', methods=['GET']) 
 def set_tempPass():
    email = request.args.get("Email")
+   print("check_mail_value_22222222222",email)
    base64_bytes = email.encode("ascii")
    sample_string_bytes = base64.b64decode(base64_bytes)
    sample_string = sample_string_bytes.decode("ascii")

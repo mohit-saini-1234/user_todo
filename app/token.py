@@ -31,11 +31,11 @@ def get_token(jwt, app):
    @jwt.user_loader_callback_loader
    def user_loader_callback(identity):
        print("user_loader_callback")
-       user = mongo.db.Users.find_one({
-           "email": identity})
+       user = mongo.db.users.find_one({
+           "username": identity})
        print('load the user by its identity')
        print('load identity by user')
-       if user is None or "email" not in user:
+       if user is None or "username" not in user:
            return None
        return user
 
